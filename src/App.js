@@ -9,6 +9,7 @@ import ToggleBox from './components/ToggleBox';
 import MovieList from './components/MovieList';
 import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
+import Loader from './components/Loader';
 
 const tempMovieData = [
   {
@@ -60,13 +61,20 @@ const tempWatchedData = [
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState('interstellar');
 
   useEffect(() => {
-    fetch(
-      `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_API}&s=interstellar`
-    )
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
+    async function fetchMovies() {
+      setIsLoading(true);
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_API}&s=${query}`
+      );
+      const data = await res.json();
+      setMovies(data.Search);
+      setIsLoading(false);
+    }
+    fetchMovies();
   }, []);
 
   return (
@@ -77,7 +85,7 @@ export default function App() {
       </Header>
       <Main>
         <ToggleBox>
-          <MovieList movies={movies} />
+          {isLoading ? <Loader /> : <MovieList movies={movies} />}
         </ToggleBox>
         <ToggleBox>
           <WatchedSummary watched={watched} />
