@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function Movie({ movie }) {
+export default function Movie({ movie, setSelectedId }) {
   return (
-    <li>
+    <li onClick={() => setSelectedId(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>

@@ -11,6 +11,7 @@ import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
 import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
+import MovieDetails from './components/MovieDetails';
 
 const tempMovieData = [
   {
@@ -65,6 +66,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     async function fetchMovies() {
@@ -111,12 +113,21 @@ export default function App() {
           ) : error ? (
             <ErrorMessage message={error} />
           ) : (
-            <MovieList movies={movies} />
+            <MovieList movies={movies} setSelectedId={setSelectedId} />
           )}
         </ToggleBox>
         <ToggleBox>
-          <WatchedSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMovieList watched={watched} />
+            </>
+          )}
         </ToggleBox>
       </Main>
     </>
