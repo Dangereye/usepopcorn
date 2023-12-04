@@ -31,6 +31,7 @@ export default function MovieDetails({
     setWatched([...watched, newMovie]);
     setSelectedId(null);
   }
+
   useEffect(() => {
     async function getMovieDetails() {
       try {
@@ -52,8 +53,15 @@ export default function MovieDetails({
     getMovieDetails();
   }, [selectedId]);
 
-  console.log('Watched: ', watched);
-  console.log('Movie: ', movie);
+  useEffect(() => {
+    if (!movie.Title) return;
+    document.title = `Movie | ${movie.Title}`;
+
+    return () => {
+      document.title = 'usePopcorn';
+    };
+  }, [movie.Title]);
+
   return (
     <div className='details'>
       {isLoading ? (
