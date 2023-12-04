@@ -4,10 +4,33 @@ import StarRating from './StarRating';
 import Loader from './Loader';
 import ErrorMessage from './ErrorMessage';
 
-export default function MovieDetails({ selectedId, setSelectedId }) {
+export default function MovieDetails({
+  selectedId,
+  setSelectedId,
+  watched,
+  setWatched,
+}) {
   const [movie, setMovie] = useState({});
+  const [userRating, setUserRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
+
+  function handleAddToWatchedList() {
+    const newMovie = {
+      ...movie,
+      imdbRating: Number(movie.imdbRating),
+      userRating,
+      Runtime: Number(movie.Runtime.split(' ').at(0)),
+    };
+
+    setWatched([...watched, newMovie]);
+    setSelectedId(null);
+  }
   useEffect(() => {
     async function getMovieDetails() {
       try {
@@ -19,6 +42,7 @@ export default function MovieDetails({ selectedId, setSelectedId }) {
         if (!res.ok) throw new Error('Oops! Something went wrong.');
         const data = await res.json();
         setMovie(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -27,6 +51,9 @@ export default function MovieDetails({ selectedId, setSelectedId }) {
     }
     getMovieDetails();
   }, [selectedId]);
+
+  console.log('Watched: ', watched);
+  console.log('Movie: ', movie);
   return (
     <div className='details'>
       {isLoading ? (
@@ -54,7 +81,29 @@ export default function MovieDetails({ selectedId, setSelectedId }) {
           </header>
           <section>
             <div className='rating'>
-              <StarRating maxRating={10} size={24} />
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+
+                  {userRating > 0 && (
+                    <button
+                      className='btn-add'
+                      onClick={handleAddToWatchedList}
+                    >
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>
+                  <span>⭐</span>
+                  {watchedUserRating} User rating
+                </p>
+              )}
             </div>
             <p>
               <em>{movie.Plot}</em>

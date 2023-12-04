@@ -61,8 +61,8 @@ const tempWatchedData = [
 ];
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
@@ -121,11 +121,13 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               setSelectedId={setSelectedId}
+              watched={watched}
+              setWatched={setWatched}
             />
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMovieList watched={watched} />
+              <WatchedMovieList watched={watched} setWatched={setWatched} />
             </>
           )}
         </ToggleBox>
