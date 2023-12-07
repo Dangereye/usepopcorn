@@ -15,20 +15,14 @@ import MovieDetails from './components/MovieDetails';
 
 // Hooks
 import useMovies from './hooks/useMovies';
+import useLocalStorage from './hooks/useLocalStorage';
 
 export default function App() {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(null);
-  const [watched, setWatched] = useState(() => {
-    const storedMovies = JSON.parse(localStorage.getItem('watched'));
-    return storedMovies;
-  });
 
+  const [watched, setWatched] = useLocalStorage();
   const { movies, isLoading, error } = useMovies(query, setSelectedId);
-
-  useEffect(() => {
-    localStorage.setItem('watched', JSON.stringify(watched));
-  }, [watched]);
 
   return (
     <>
