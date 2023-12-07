@@ -27,7 +27,6 @@ export default function MovieDetails({
       userRating,
       Runtime: Number(movie.Runtime.split(' ').at(0)),
     };
-
     setWatched([...watched, newMovie]);
     setSelectedId(null);
   }
@@ -43,7 +42,6 @@ export default function MovieDetails({
         if (!res.ok) throw new Error('Oops! Something went wrong.');
         const data = await res.json();
         setMovie(data);
-        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
